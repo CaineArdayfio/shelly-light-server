@@ -84,17 +84,6 @@
             transform: translateY(0);
         }
 
-        .toggle-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            margin-top: 20px;
-            font-size: 16px;
-            opacity: 0.6;
-        }
-
         @keyframes glow {
             0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 220, 100, 0.8)); }
             50% { filter: drop-shadow(0 0 40px rgba(255, 220, 100, 1)); }
@@ -113,7 +102,6 @@
         <button class="toggle-button" id="toggleBtn" onclick="toggleLight()">
             Turn ON
         </button>
-        <p class="loading" id="loading"></p>
     </div>
 
     <script>
@@ -123,40 +111,30 @@
             const btn = document.getElementById('toggleBtn');
             const status = document.getElementById('status');
             const lamp = document.getElementById('lamp');
-            const loading = document.getElementById('loading');
             const body = document.body;
 
-            btn.disabled = true;
-            loading.textContent = 'Switching...';
+            // Update UI immediately (optimistic update)
+            isOn = !isOn;
 
-            try {
-                const endpoint = isOn ? '/off' : '/on';
-                const response = await fetch(endpoint);
-                const data = await response.json();
-
-                if (data.success) {
-                    isOn = !isOn;
-
-                    if (isOn) {
-                        body.className = 'light';
-                        status.textContent = 'Light is ON';
-                        btn.textContent = 'Turn OFF';
-                        lamp.classList.add('on');
-                    } else {
-                        body.className = 'dark';
-                        status.textContent = 'Light is OFF';
-                        btn.textContent = 'Turn ON';
-                        lamp.classList.remove('on');
-                    }
-                } else {
-                    loading.textContent = 'Error: Failed to toggle light';
-                }
-            } catch (error) {
-                loading.textContent = 'Error: ' + error.message;
+            if (isOn) {
+                body.className = 'light';
+                status.textContent = 'Light is ON';
+                btn.textContent = 'Turn OFF';
+                lamp.classList.add('on');
+            } else {
+                body.className = 'dark';
+                status.textContent = 'Light is OFF';
+                btn.textContent = 'Turn ON';
+                lamp.classList.remove('on');
             }
 
-            btn.disabled = false;
-            setTimeout(() => loading.textContent = '', 2000);
+            // Send request in background
+            try {
+                const endpoint = isOn ? '/on' : '/off';
+                fetch(endpoint);
+            } catch (error) {
+                // Silently fail
+            }
         }
 
         // Check initial status on load
@@ -173,7 +151,7 @@
                     document.getElementById('lamp').classList.add('on');
                 }
             } catch (error) {
-                console.error('Failed to check status:', error);
+                // Silently fail
             }
         }
 
