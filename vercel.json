@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/on", "destination": "/api/on" },
+    { "source": "/off", "destination": "/api/off" },
+    { "source": "/status", "destination": "/api/status" }
+  ]
+}
