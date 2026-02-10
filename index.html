@@ -3,159 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Light Control</title>
+    <title>xkcd: Caine's Light Switch</title>
     <style>
-        * {
+        body {
+            background: #96A8C8;
+            font-family: Lucida, Helvetica, sans-serif;
+            font-weight: 500;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: none;
         }
-
-        body.light {
-            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
-            color: #333;
+        #container { width: 780px; position: relative; }
+        #header { padding: 17px 0 0 17px; }
+        #slogan {
+            font-size: 16px; font-style: italic;
+            font-weight: 800; color: #000; margin: 2px 0 0 0;
         }
-
-        body.dark {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
+        #topnav {
+            text-align: center; margin: 6px 0 0 0; padding: 4px 0;
         }
-
-        .container {
-            text-align: center;
-            padding: 40px;
+        #topnav a, .comicNav a {
+            background: #6E7B91; color: #fff; font-size: 15px;
+            font-weight: 600; padding: 2px 12px; border-radius: 3px;
+            text-decoration: none; margin: 0 1px;
+            box-shadow: 0 0 5px 0 gray; cursor: pointer;
+            display: inline-block;
         }
-
-        .lamp {
-            font-size: 150px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        #topnav a:hover, .comicNav a:hover {
+            background: #fff; color: #6E7B91; box-shadow: none;
         }
-
-        .lamp:hover {
-            transform: scale(1.1);
+        #middle {
+            background: #fff; border: 1.5px solid #071419;
+            margin: 8px 5px; padding: 10px 0; text-align: center;
         }
-
-        h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            font-weight: 700;
+        #ctitle { font-size: 21px; font-weight: 800; margin: 0 0 8px 0; }
+        .comicNav { margin: 6px 0; }
+        #comic { margin: 0 auto; display: block; cursor: pointer; }
+        #output {
+            font-size: 13px; color: #666; margin-top: 4px;
+            font-style: italic; min-height: 18px;
         }
-
-        .status {
-            font-size: 24px;
-            margin-bottom: 40px;
-            opacity: 0.8;
-        }
-
-        .toggle-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            padding: 20px 60px;
-            font-size: 24px;
-            font-weight: 600;
-            color: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .toggle-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .toggle-button:active {
-            transform: translateY(0);
-        }
-
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 220, 100, 0.8)); }
-            50% { filter: drop-shadow(0 0 40px rgba(255, 220, 100, 1)); }
-        }
-
-        .lamp.on {
-            animation: glow 2s ease-in-out infinite;
-        }
+        #footer { font-size: 12px; color: #000; padding: 6px 17px 20px; }
     </style>
 </head>
-<body class="dark">
-    <div class="container">
-        <div class="lamp" id="lamp">💡</div>
-        <h1>Light Control</h1>
-        <p class="status" id="status">Light is OFF</p>
-        <button class="toggle-button" id="toggleBtn" onclick="toggleLight()">
-            Turn ON
-        </button>
+<body>
+<div id="container">
+    <div id="header">
+        <div style="font-size: 32px; font-weight: 800; letter-spacing: -1px; color: #000;">xkcd</div>
+        <div id="slogan">A webcomic of romance, sarcasm, math, and language.</div>
     </div>
+    <div id="topnav">
+        <a>Archive</a> <a>What If?</a> <a>About</a> <a>Feed</a> <a>Email</a> <a>TW</a> <a>FB</a>
+    </div>
+    <div id="middle">
+        <div id="ctitle">Caine's Light Switch</div>
+        <div class="comicNav">
+            <a>|&lt;</a> <a>&lt; Prev</a> <a>Random</a> <a>Next &gt;</a> <a>&gt;|</a>
+        </div>
+        <canvas id="comic" width="740" height="500"></canvas>
+        <div id="output"></div>
+        <div class="comicNav">
+            <a>|&lt;</a> <a>&lt; Prev</a> <a>Random</a> <a>Next &gt;</a> <a>&gt;|</a>
+        </div>
+    </div>
+    <div id="footer">
+        Permanent link to this comic: https://xkcd.com/2941/<br>
+        Image URL (for hotlinking/embedding): https://imgs.xkcd.com/comics/caines_light_switch.png<br>
+        <span style="color:#666; font-style: italic;">built by caine ardayfio // mira (trymira.com) // harvard '26</span>
+    </div>
+</div>
 
-    <script>
-        let isOn = false;
+<script>
+const c = document.getElementById('comic');
+const $ = c.getContext('2d');
+let on = false;
+let clicks = 0;
 
-        async function toggleLight() {
-            const btn = document.getElementById('toggleBtn');
-            const status = document.getElementById('status');
-            const lamp = document.getElementById('lamp');
-            const body = document.body;
+// Seeded PRNG for stable wobble
+let seed = 1;
+function rand() { seed = (seed * 16807 + 1) % 2147483647; return seed / 2147483647; }
 
-            // Update UI immediately (optimistic update)
-            isOn = !isOn;
+// === xkcd drawing primitives ===
 
-            if (isOn) {
-                body.className = 'light';
-                status.textContent = 'Light is ON';
-                btn.textContent = 'Turn OFF';
-                lamp.classList.add('on');
-            } else {
-                body.className = 'dark';
-                status.textContent = 'Light is OFF';
-                btn.textContent = 'Turn ON';
-                lamp.classList.remove('on');
-            }
+function wline(x1, y1, x2, y2, amp = 0.8) {
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const segs = Math.max(Math.round(len / 25), 2);
+    const dx = (x2 - x1) / segs, dy = (y2 - y1) / segs;
+    const pnx = -dy / (len / segs) * amp;
+    const pny = dx / (len / segs) * amp;
+    $.beginPath();
+    $.moveTo(x1, y1);
+    for (let i = 1; i <= segs; i++) {
+        const w = (rand() - 0.5) * 2;
+        $.quadraticCurveTo(
+            x1 + dx * (i - 0.5) + pnx * w,
+            y1 + dy * (i - 0.5) + pny * w,
+            x1 + dx * i, y1 + dy * i
+        );
+    }
+    $.stroke();
+}
 
-            // Send request in background
-            try {
-                const endpoint = isOn ? '/on' : '/off';
-                fetch(endpoint);
-            } catch (error) {
-                // Silently fail
-            }
+function wrect(x, y, w, h, amp) {
+    wline(x,y, x+w,y, amp); wline(x+w,y, x+w,y+h, amp);
+    wline(x+w,y+h, x,y+h, amp); wline(x,y+h, x,y, amp);
+}
+
+function wcircle(cx, cy, r, amp = 0.6) {
+    $.beginPath();
+    for (let i = 0; i <= 50; i++) {
+        const a = (i / 50) * Math.PI * 2;
+        const wr = r + (rand() - 0.5) * amp * 2;
+        const px = cx + Math.cos(a) * wr, py = cy + Math.sin(a) * wr;
+        i === 0 ? $.moveTo(px, py) : $.lineTo(px, py);
+    }
+    $.closePath();
+}
+
+function txt(s, x, y, sz = 18, align = 'center') {
+    $.font = `${sz}px "Patrick Hand", "Humor Sans", "Comic Sans MS", sans-serif`;
+    $.textAlign = align;
+    $.fillText(s, x, y);
+}
+
+// === STICK FIGURE (xkcd proportions) ===
+function person(x, footY, armPose) {
+    const headR = 18;
+    const torsoLen = 65;
+    const legLen = 50;
+    const headY = footY - legLen - torsoLen - headR;
+    const neckY = headY + headR;
+    const hipY = neckY + torsoLen;
+    const shoulderY = neckY + 15;
+
+    // Head — big empty circle
+    wcircle(x, headY, headR, 0.5);
+    $.stroke();
+
+    // Torso
+    wline(x, neckY, x, hipY);
+
+    // Legs
+    wline(x, hipY, x - 20, footY);
+    wline(x, hipY, x + 20, footY);
+
+    // Arms
+    if (armPose === 'up-left') {
+        wline(x, shoulderY, x - 30, shoulderY - 45);
+        wline(x, shoulderY, x + 28, shoulderY + 30);
+    } else if (armPose === 'pointing') {
+        wline(x, shoulderY, x - 26, shoulderY + 35);
+        wline(x, shoulderY, x + 35, shoulderY - 10);
+    } else {
+        wline(x, shoulderY, x - 26, shoulderY + 35);
+        wline(x, shoulderY, x + 26, shoulderY + 35);
+    }
+
+    return { headY, shoulderY, neckY, hipY };
+}
+
+// === SMART GLASSES on head (Mira glasses!) ===
+function glasses(x, headY) {
+    $.lineWidth = 2;
+    // two lens rectangles on head
+    wrect(x - 16, headY - 5, 13, 8, 0.3);
+    $.stroke();
+    wrect(x + 3, headY - 5, 13, 8, 0.3);
+    $.stroke();
+    // bridge
+    wline(x - 3, headY - 1, x + 3, headY - 1, 0.2);
+    // temple arms
+    wline(x - 16, headY - 3, x - 22, headY - 1, 0.2);
+    wline(x + 16, headY - 3, x + 22, headY - 1, 0.2);
+    $.lineWidth = 2.5;
+}
+
+// === SPEECH BUBBLE ===
+function speechBubble(text, speakerX, speakerHeadY, bx, by) {
+    $.save();
+    $.font = '15px "Patrick Hand", "Humor Sans", "Comic Sans MS", sans-serif';
+    $.textAlign = 'center';
+    const tw = $.measureText(text).width;
+    const pw = tw + 28, ph = 30;
+    const r = 10;
+    const l = bx - pw/2, t = by - ph/2;
+
+    // Tail
+    const tailTipX = speakerX, tailTipY = speakerHeadY - 22;
+    $.beginPath();
+    $.moveTo(tailTipX, tailTipY);
+    $.lineTo(bx - 12, by + ph/2);
+    $.moveTo(tailTipX, tailTipY);
+    $.lineTo(bx + 4, by + ph/2);
+    $.stroke();
+
+    // Bubble
+    $.fillStyle = on ? '#fff' : '#000';
+    $.beginPath();
+    $.moveTo(l + r, t);
+    $.arcTo(l + pw, t, l + pw, t + ph, r);
+    $.arcTo(l + pw, t + ph, l, t + ph, r);
+    $.arcTo(l, t + ph, l, t, r);
+    $.arcTo(l, t, l + pw, t, r);
+    $.closePath();
+    $.fill();
+    $.stroke();
+
+    $.fillStyle = on ? '#000' : '#fff';
+    $.fillText(text, bx, by + 5);
+    $.restore();
+}
+
+// === DESK with laptop + coffee ===
+function desk(x, floorY, col) {
+    const deskY = floorY - 55;
+    // tabletop
+    wline(x, deskY, x + 130, deskY, 0.6);
+    // legs
+    wline(x + 10, deskY, x + 8, floorY, 0.5);
+    wline(x + 120, deskY, x + 118, floorY, 0.5);
+
+    // laptop (open)
+    wrect(x + 20, deskY - 30, 40, 25, 0.3); // screen
+    $.stroke();
+    wline(x + 15, deskY - 2, x + 65, deskY - 2, 0.3); // base
+
+    // coffee mug
+    wrect(x + 85, deskY - 18, 14, 16, 0.3);
+    $.stroke();
+    // handle
+    $.beginPath();
+    $.arc(x + 99, deskY - 10, 5, -Math.PI/2, Math.PI/2, false);
+    $.stroke();
+
+    if (on) {
+        // steam
+        $.lineWidth = 1.2;
+        $.beginPath();
+        $.moveTo(x + 89, deskY - 20);
+        $.quadraticCurveTo(x + 87, deskY - 28, x + 91, deskY - 34);
+        $.stroke();
+        $.beginPath();
+        $.moveTo(x + 95, deskY - 20);
+        $.quadraticCurveTo(x + 97, deskY - 28, x + 93, deskY - 34);
+        $.stroke();
+        $.lineWidth = 2.5;
+
+        // code lines on laptop screen
+        $.lineWidth = 1.2;
+        wline(x + 26, deskY - 22, x + 46, deskY - 22, 0.2);
+        wline(x + 26, deskY - 17, x + 40, deskY - 17, 0.2);
+        wline(x + 29, deskY - 12, x + 50, deskY - 12, 0.2);
+        $.lineWidth = 2.5;
+    }
+}
+
+// === MAIN DRAW ===
+function draw() {
+    seed = 42;
+    $.clearRect(0, 0, c.width, c.height);
+    $.lineCap = 'round';
+    $.lineJoin = 'round';
+
+    const floorY = 400;
+    const col = on ? '#000' : '#fff';
+    const bg = on ? '#fff' : '#000';
+
+    $.fillStyle = bg;
+    $.fillRect(0, 0, c.width, c.height);
+    $.strokeStyle = col;
+    $.fillStyle = col;
+    $.lineWidth = 2.5;
+
+    // Floor
+    wline(0, floorY, 740, floorY, 1.0);
+
+    // === CEILING LIGHT BULB ===
+    wline(370, 0, 370, 90, 0.5);
+    wrect(360, 90, 20, 10, 0.4);
+    $.stroke();
+    wcircle(370, 118, 18, 0.5);
+    $.stroke();
+
+    if (on) {
+        $.lineWidth = 1.8;
+        for (let i = 0; i < 10; i++) {
+            const a = (i / 10) * Math.PI * 2;
+            wline(
+                370 + Math.cos(a) * 24, 118 + Math.sin(a) * 24,
+                370 + Math.cos(a) * 42, 118 + Math.sin(a) * 42, 0.3
+            );
         }
+        $.lineWidth = 2.5;
+    }
 
-        // Check initial status on load
-        async function checkStatus() {
-            try {
-                const response = await fetch('/status');
-                const data = await response.json();
+    // === LIGHT SWITCH ===
+    wrect(105, 230, 24, 40, 0.5);
+    $.stroke();
+    if (on) {
+        $.fillRect(111, 234, 12, 14);
+    } else {
+        $.fillRect(111, 254, 12, 14);
+    }
 
-                if (data.success && data.power === 'ON') {
-                    isOn = true;
-                    document.body.className = 'light';
-                    document.getElementById('status').textContent = 'Light is ON';
-                    document.getElementById('toggleBtn').textContent = 'Turn OFF';
-                    document.getElementById('lamp').classList.add('on');
-                }
-            } catch (error) {
-                // Silently fail
-            }
-        }
+    // === CAINE (stick figure with glasses) ===
+    const fig = person(220, floorY, on ? 'up-left' : 'down');
+    glasses(220, fig.headY);
 
-        checkStatus();
-    </script>
+    // === DESK (right side of scene) ===
+    desk(480, floorY, col);
+
+    // === ANNOTATIONS ===
+    $.lineWidth = 1.2;
+    $.setLineDash([5, 4]);
+
+    // bulb annotation
+    $.beginPath();
+    $.moveTo(410, 110);
+    $.quadraticCurveTo(445, 95, 470, 98);
+    $.stroke();
+
+    // glasses annotation
+    $.beginPath();
+    $.moveTo(245, fig.headY - 3);
+    $.quadraticCurveTo(270, fig.headY - 20, 295, fig.headY - 18);
+    $.stroke();
+
+    // desk annotation
+    $.beginPath();
+    $.moveTo(550, floorY - 80);
+    $.quadraticCurveTo(570, floorY - 95, 590, floorY - 92);
+    $.stroke();
+
+    $.setLineDash([]);
+    $.fillStyle = col;
+    txt(on ? '(on)' : '(off)', 500, 103, 14);
+    txt('mira glasses', 340, fig.headY - 18, 12);
+    txt('the startup grind', 635, floorY - 88, 11, 'left');
+    $.lineWidth = 2.5;
+
+    // === SPEECH BUBBLE ===
+    if (currentSpeech) {
+        speechBubble(currentSpeech, 220, fig.headY, 350, fig.headY - 55);
+    }
+
+    // === EASTER EGGS (click-based) ===
+    $.fillStyle = on ? '#bbb' : '#444';
+    if (clicks === 3) txt("the switch also controls a real light btw.", 370, 455, 13);
+    else if (clicks === 7) txt("you've flipped this 7 times. classic QA testing.", 370, 455, 13);
+    else if (clicks === 12) txt("somewhere in shenzhen a factory worker is confused.", 370, 455, 13);
+    else if (clicks === 20) txt("epictetus would tell you to stop.", 370, 455, 13);
+    else if (clicks >= 25) txt("\"attachment to the switch is the root of suffering.\"", 370, 455, 13);
+
+    // === BOTTOM CAPTION (changes with click count) ===
+    $.fillStyle = on ? '#ccc' : '#333';
+    if (clicks === 0) {
+        // nothing
+    } else if (clicks === 1) {
+        txt("CAINE'S ROOM", 370, 480, 16);
+    }
+}
+
+// === SPEECH LINES (personalized) ===
+let currentSpeech = '';
+let speechTimer = null;
+
+const onLines = [
+    "ah, much better.",
+    "let there be photons.",
+    "okay, back to the firmware.",
+    "mira demo in 10. let's go.",
+    "i can see the J-Link now.",
+    "productivity mode: on.",
+    "the lagrangian of this room just changed.",
+    "oh hey, there's my soldering iron."
+];
+
+const offLines = [
+    "existential darkness.",
+    "this is fine. very stoic.",
+    "saving runway, one watt at a time.",
+    "where's the ambiq devboard?",
+    "darkness, my old friend.",
+    "the tao that can be lit is not the eternal tao.",
+    "i should go practice breakdancing.",
+    "hmm, cozy. very bushcraft."
+];
+
+// xkcd title-text (hover tooltip) — personalized
+c.title = "caine built this entire web page to control a single light bulb in his room. " +
+    "the light switch also triggers an API call to a shelly smart plug. " +
+    "the mira glasses were not involved in this process but he drew them anyway. " +
+    "the coffee is colombian, from that one trip.";
+
+// === CLICK ===
+c.addEventListener('click', () => {
+    on = !on;
+    clicks++;
+    const list = on ? onLines : offLines;
+    currentSpeech = list[Math.floor(Math.random() * list.length)];
+    clearTimeout(speechTimer);
+    speechTimer = setTimeout(() => { currentSpeech = ''; draw(); }, 3000);
+    draw();
+    document.getElementById('output').textContent = on
+        ? '(click comic to turn off)' : '(click comic to turn on)';
+    try { fetch(on ? '/on' : '/off'); } catch(e) {}
+});
+
+document.fonts.ready.then(() => draw());
+draw();
+</script>
 </body>
 </html>
